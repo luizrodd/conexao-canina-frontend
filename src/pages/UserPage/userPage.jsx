@@ -3,15 +3,18 @@ import styles from './userPage.module.css';
 import transition from '../../components/Transition/transition';
 import { useNavigate } from 'react-router-dom';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-
 import avatarIcon from '../../assets/PessoaUsuario.png';
 import userIcon from '../../assets/perfilUsuario.png';
 import locationIcon from '../../assets/ELEMENTS.png';
 import emailIcon from '../../assets/email.png';
 import phoneIcon from '../../assets/phone.png';
 import dogIcon from '../../assets/dogIcon.png';
+import { useAuthValue } from '../../context/AuthContext';
 
 const UserPage = () => {
+  const { user, userInfo } = useAuthValue();
+  console.log(user)
+  console.log(userInfo);
   const [imgUrl, setImgUrl] = useState('');
   const [dogs, setDogs] = useState([]);
   const [requests, setRequests] = useState([]);
@@ -118,23 +121,21 @@ const UserPage = () => {
 
       <div className={styles.rightColumn}>
         <div className={styles.userInfo}>
-          <h1>José Afonso Oliveira</h1>
-          <p>
-            <img src={userIcon} alt="Ícone de Usuário" className={styles.icon} /> jose.oliveira
-          </p>
-          <p>
-            <img src={locationIcon} alt="Ícone de Localização" className={styles.icon} /> São Paulo, SP
-          </p>
-          <p>
-            <img src={emailIcon} alt="Ícone de Email" className={styles.icon} /> jose.oliveira@gmail.com
-          </p>
-          <p>
-            <img src={phoneIcon} alt="Ícone de Telefone" className={styles.icon} /> (16) 99999-9999
-          </p>
-          <button className={styles.editButton}>Alterar meus dados</button>
-          <button className={styles.registerDogButton} onClick={goToCreateProfile}>
-            Cadastre seu Cão
-          </button>
+        {userInfo ? (
+          <><h1>{userInfo.nome}</h1><p>
+              <img src={userIcon} alt="Ícone de Usuário" className={styles.icon} /> {userInfo.nome}
+            </p><p>
+                <img src={locationIcon} alt="Ícone de Localização" className={styles.icon} /> São Paulo, SP
+              </p><p>
+                <img src={emailIcon} alt="Ícone de Email" className={styles.icon} /> {userInfo.email}
+              </p><p>
+                <img src={phoneIcon} alt="Ícone de Telefone" className={styles.icon} /> {userInfo.telefone}
+              </p><button className={styles.editButton}>Alterar meus dados</button><button className={styles.registerDogButton} onClick={goToCreateProfile}>
+                Cadastre seu Cão
+              </button></>
+        ) : (
+          <p>Loading user information...</p>
+        )}
         </div>
 
         {/* Seção "Meus Cães" */}

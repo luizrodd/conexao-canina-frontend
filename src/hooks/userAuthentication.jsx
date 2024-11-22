@@ -28,8 +28,8 @@ export const userAuthentication = () => {
         
         setLoading(true)
         setError(null)
-
         try{
+
             const { user } = await createUserWithEmailAndPassword(
                 auth,
                 data.email,

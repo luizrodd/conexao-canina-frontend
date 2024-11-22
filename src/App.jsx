@@ -24,6 +24,7 @@ import CreateDogProfile from './pages/CreateProfile/CreateDogProfile';
 import DogProfileForm from './components/DogProfileForm/DogProfileForm';
 import CreateAlbum from './pages/CreateAlbum/CreateAlbum';
 import Acompanhamento from './pages/Acompanhamento/Acompanhamento';
+import axios from 'axios';
 
 
 function App() {
@@ -35,18 +36,23 @@ function App() {
     }, [location]);
 
     const [user, setUser] = useState(undefined);
+    const [userInfo, setUserInfo] = useState(undefined);
     const { auth } = userAuthentication();
 
     // Verifica o estado de autenticação do usuário
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             setUser(user);
+            axios.get(`https://localhost:7060/api/Usuario/loggedUser/${user.email}`).then(response => {
+                setUserInfo(response.data);
+            });
+            setUserInfo();
         });
         return () => unsubscribe(); // Limpeza do listener
     }, [auth]);
 
     return (
-        <AuthProvider value={{ user }}>
+        <AuthProvider value={{ user, userInfo }}>
                 <Navbar />
                 <AnimatePresence mode='wait'>
                     <Routes location={location} key={location.pathname}>
@@ -72,3 +78,4 @@ function App() {
 }
 
 export default App;
+

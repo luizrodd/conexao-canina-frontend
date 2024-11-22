@@ -3,6 +3,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { userAuthentication } from '../../hooks/userAuthentication'
 import trasition from '../../components/Transition/transition'
+import axios from 'axios'
 
 
 function Register() {
@@ -28,7 +29,7 @@ function Register() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  
+
   const handlerSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -48,12 +49,24 @@ function Register() {
       // dogInfo
     }
 
-    if (password != confirmedPassword){
+    if (password != confirmedPassword) {
       setError("As senhas precisam ser iguais.")
       return
     }
 
     const res = await createUser(user)
+
+    try {
+      axios.post('https://localhost:7060/api/Usuario', {
+        nome: displayName,
+        email: email,
+        senha: password,
+        telefone: '123456789',
+      })
+    } catch (error) {
+      console.error('Erro ao fazer o POST:', error);
+    }
+
     console.table(res)
   }
 
@@ -62,62 +75,62 @@ function Register() {
       setError(authError)
     }
   }, [authError])
-  
+
   return (
     <>
-    <div className={styles.container}>
-    <form className={styles.form} onSubmit={handlerSubmit}>
-        <div >
-          <div className={styles.header}>
-           <span>Novo usuário? Cadastre-se!</span>
-          </div>
-          <span>Nome Completo:</span>
-          <label className={styles.inputContainer}>
-            <input 
-            type="text" 
-            name='displayName'
-            required
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder='Nome Completo'></input>
-          </label>
-          <span>Email:</span>
-          <label className={styles.inputContainer} >
-            <input 
-            type="email" 
-            name='email'
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder='Email'></input>
-          </label>
-          <span>Senha:</span>
-          <label className={styles.inputContainer}>
-            <input 
-            type={showPassword ? 'text' : 'password'} 
-            name='password'
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder='Senha'></input>
-            <button className={styles.olho} type="button" onClick={toggleShowPassword}>
-              {showPassword ? '👁️' : '👁️'}
-            </button>
-          </label>
-          <span>Confirme sua senha:</span>
-          <label className={styles.inputContainer}>
-            <input 
-            type={showPassword ? 'text' : 'password'}
-            name='confirmedPassword'
-            required
-            value={confirmedPassword}
-            onChange={(e) => setConfirmedPassword(e.target.value)}
-            placeholder='Confirme sua senha'></input>
-            <button className={styles.olho}  onClick={toggleShowPassword}>
-              {showPassword ? '👁️' : '👁️'}
-            </button>
-          </label>
-          {/* <span>Celular:</span>
+      <div className={styles.container}>
+        <form className={styles.form} onSubmit={handlerSubmit}>
+          <div >
+            <div className={styles.header}>
+              <span>Novo usuário? Cadastre-se!</span>
+            </div>
+            <span>Nome Completo:</span>
+            <label className={styles.inputContainer}>
+              <input
+                type="text"
+                name='displayName'
+                required
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder='Nome Completo'></input>
+            </label>
+            <span>Email:</span>
+            <label className={styles.inputContainer} >
+              <input
+                type="email"
+                name='email'
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder='Email'></input>
+            </label>
+            <span>Senha:</span>
+            <label className={styles.inputContainer}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name='password'
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='Senha'></input>
+              <button className={styles.olho} type="button" onClick={toggleShowPassword}>
+                {showPassword ? '👁️' : '👁️'}
+              </button>
+            </label>
+            <span>Confirme sua senha:</span>
+            <label className={styles.inputContainer}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name='confirmedPassword'
+                required
+                value={confirmedPassword}
+                onChange={(e) => setConfirmedPassword(e.target.value)}
+                placeholder='Confirme sua senha'></input>
+              <button className={styles.olho} onClick={toggleShowPassword}>
+                {showPassword ? '👁️' : '👁️'}
+              </button>
+            </label>
+            {/* <span>Celular:</span>
           <label className={styles.inputContainer}>
             <input 
             type="tel" 
@@ -257,12 +270,12 @@ function Register() {
             onChange={(e) => setDogInfo(e.target.value)}
             placeholder='Conte aqui um pouco sobre o Pet'></textarea>
           </label> */}
-        </div>
-        {!loading && <button className='button'>Cadastrar</button>}
-        {loading && <button className='button' disabled>Aguarde...</button>}
-        {error && <p className='error'>{error}</p>}
-      </form>
-    </div>
+          </div>
+          {!loading && <button className='button'>Cadastrar</button>}
+          {loading && <button className='button' disabled>Aguarde...</button>}
+          {error && <p className='error'>{error}</p>}
+        </form>
+      </div>
     </>
   )
 }
